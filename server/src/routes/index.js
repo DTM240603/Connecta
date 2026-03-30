@@ -6,6 +6,7 @@ const uploadRoutes = require("./uploadRoutes");
 const conversationRoutes = require("./conversationRoutes");
 const messageRoutes = require("./messageRoutes");
 const notificationRoutes = require("./notificationRoutes");
+const searchRoutes = require("./searchRoutes");
 
 const router = express.Router();
 
@@ -23,5 +24,6 @@ router.use("/upload", uploadRoutes);
 router.use("/conversations", conversationRoutes);
 router.use("/messages", messageRoutes);
 router.use("/notifications", notificationRoutes);
+router.use("/search", searchRoutes);
 
 module.exports = router;

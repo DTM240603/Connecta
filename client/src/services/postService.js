@@ -45,6 +45,16 @@ export const addCommentApi = async (postId, payload) => {
   return response.data;
 };
 
+export const updateCommentApi = async (commentId, payload) => {
+  const response = await axiosClient.patch(`/posts/comments/${commentId}`, payload);
+  return response.data;
+};
+
+export const deleteCommentApi = async (commentId) => {
+  const response = await axiosClient.delete(`/posts/comments/${commentId}`);
+  return response.data;
+};
+
 export const uploadPostImageApi = async (file) => {
   const formData = new FormData();
   formData.append("image", file);

@@ -14,8 +14,18 @@ const commentSchema = new mongoose.Schema(
     },
     content: {
       type: String,
-      required: [true, "Bình luận không được để trống"],
+      required: true,
       trim: true,
+    },
+    parentComment: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Comment",
+      default: null,
+    },
+    replyToUser: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
     },
   },
   {

@@ -80,7 +80,13 @@ const emitToUser = (userId, eventName, payload) => {
   }
 };
 
+const emitToAll = (eventName, payload) => {
+  if (!ioInstance) return;
+  ioInstance.emit(eventName, payload);
+};
+
 module.exports = {
   initSocket,
   emitToUser,
+  emitToAll,
 };

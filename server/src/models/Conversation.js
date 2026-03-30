@@ -13,6 +13,17 @@ const conversationSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    pairKey: {
+      type: String,
+      index: true,
+      default: "",
+    },
+    hiddenFor: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
   },
   {
     timestamps: true,

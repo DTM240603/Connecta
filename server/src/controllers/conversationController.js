@@ -3,6 +3,8 @@ const { successResponse } = require("../utils/response");
 const {
   createOrGetConversationService,
   getMyConversationsService,
+  hideConversationForMeService,
+  deleteConversationPermanentlyService,
 } = require("../services/conversationService");
 
 const createOrGetConversation = asyncHandler(async (req, res) => {
@@ -36,7 +38,35 @@ const getMyConversations = asyncHandler(async (req, res) => {
   );
 });
 
+const hideConversationForMe = asyncHandler(async (req, res) => {
+  const result = await hideConversationForMeService({
+    conversationId: req.params.conversationId,
+    currentUserId: req.user._id,
+  });
+
+  return successResponse(
+    res,
+    "Ẩn cuộc trò chuyện thành công",
+    result
+  );
+});
+
+const deleteConversationPermanently = asyncHandler(async (req, res) => {
+  const result = await deleteConversationPermanentlyService({
+    conversationId: req.params.conversationId,
+    currentUserId: req.user._id,
+  });
+
+  return successResponse(
+    res,
+    "Xóa vĩnh viễn cuộc trò chuyện thành công",
+    result
+  );
+});
+
 module.exports = {
   createOrGetConversation,
   getMyConversations,
+  hideConversationForMe,
+  deleteConversationPermanently,
 };

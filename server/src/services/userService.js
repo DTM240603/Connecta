@@ -2,7 +2,10 @@ const User = require("../models/User");
 const { createNotificationService } = require("./notificationService");
 
 const getCurrentUser = async (userId) => {
-  const user = await User.findById(userId).select("-password");
+  const user = await User.findById(userId)
+    .select("-password")
+    .populate("followers", "fullName username avatar")
+    .populate("following", "fullName username avatar");
 
   if (!user) {
     throw new Error("Không tìm thấy người dùng");
@@ -21,29 +24,37 @@ const updateCurrentUser = async (userId, payload) => {
   }
 
   if (username && username !== user.username) {
-    const existingUsername = await User.findOne({ username });
-
-    if (existingUsername) {
+    const existingUser = await User.findOne({ username });
+    if (existingUser) {
       throw new Error("Username đã tồn tại");
     }
-
-    user.username = username;
   }
 
-  if (fullName !== undefined) user.fullName = fullName;
-  if (bio !== undefined) user.bio = bio;
-  if (avatar !== undefined) user.avatar = avatar;
-  if (coverImage !== undefined) user.coverImage = coverImage;
+  user.fullName = fullName ?? user.fullName;
+  user.username = username ?? user.username;
+  user.bio = bio ?? user.bio;
+  user.avatar = avatar ?? user.avatar;
+  user.coverImage = coverImage ?? user.coverImage;
 
   await user.save();
 
-  return await User.findById(userId).select("-password");
+  const updatedUser = await User.findById(user._id)
+    .select("-password")
+    .populate("followers", "fullName username avatar")
+    .populate("following", "fullName username avatar");
+
+  return updatedUser;
 };
 
 const getAllUsers = async (currentUserId) => {
   const users = await User.find({
     _id: { $ne: currentUserId },
-  }).select("-password");
+    status: "active",
+  })
+    .select("-password")
+    .populate("followers", "fullName username avatar")
+    .populate("following", "fullName username avatar")
+    .sort({ createdAt: -1 });
 
   return users;
 };
@@ -80,22 +91,29 @@ const toggleFollowUser = async (currentUserId, targetUserId) => {
       recipient: targetUserId,
       sender: currentUserId,
       type: "follow",
-      message: `${currentUser.fullName} đã theo dõi bạn`,
+      message: "đã theo dõi bạn",
     });
   }
 
   await currentUser.save();
   await targetUser.save();
 
+  const refreshedCurrentUser = await User.findById(currentUserId)
+    .select("-password")
+    .populate("followers", "fullName username avatar")
+    .populate("following", "fullName username avatar");
+
   return {
     following: !isFollowing,
-    currentUserFollowingCount: currentUser.following.length,
-    targetUserFollowersCount: targetUser.followers.length,
+    user: refreshedCurrentUser,
   };
 };
 
 const getUserById = async (userId) => {
-  const user = await User.findById(userId).select("-password");
+  const user = await User.findById(userId)
+    .select("-password")
+    .populate("followers", "fullName username avatar")
+    .populate("following", "fullName username avatar");
 
   if (!user) {
     throw new Error("Không tìm thấy người dùng");
