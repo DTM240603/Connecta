@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+// eslint-disable-next-line no-unused-vars
 import { motion } from "motion/react";
 import {
   Bell,
@@ -45,7 +46,8 @@ function MainLayout({ children, user, onUserUpdated }) {
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [chatBoxes, setChatBoxes] = useState([]);
   const [hideConversationTarget, setHideConversationTarget] = useState(null);
-  const [deleteConversationTarget, setDeleteConversationTarget] = useState(null);
+  const [deleteConversationTarget, setDeleteConversationTarget] =
+    useState(null);
   const [processingConversationAction, setProcessingConversationAction] =
     useState(false);
 
